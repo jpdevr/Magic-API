@@ -54,7 +54,6 @@
 
 .topbar,
 .mana-banner,
-.collections,
 .rules-panel,
 .walkers-panel,
 .favorites,
@@ -311,7 +310,6 @@ h1 {
 }
 
 .library-grid,
-.collections,
 .codex-area,
 .vault {
   max-width: 1320px;
@@ -406,7 +404,6 @@ h1 {
   margin-top: 22px;
 }
 
-.collections,
 .rules-panel,
 .book-cover,
 .favorites,
@@ -415,29 +412,12 @@ h1 {
   padding: 20px;
 }
 
-.set-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
-  gap: 12px;
-}
-
-.set-list article,
 .rules-panel article,
 .mini-list article,
 .deck-list article {
   border: 1px solid rgba(244, 234, 215, 0.1);
   border-radius: 8px;
   background: rgba(0,0,0,0.22);
-}
-
-.set-list article {
-  display: grid;
-  gap: 6px;
-  padding: 12px;
-}
-
-.set-list strong {
-  color: var(--accent);
 }
 
 .rule-book,

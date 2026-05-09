@@ -5,7 +5,7 @@ import { finalize } from 'rxjs';
 import { MANA_OPTIONS, RULE_BOOK, TYPE_SYMBOLS } from './data/magic-content';
 import { MagicApiService } from './services/magic-api.service';
 import { LibraryService } from './services/library.service';
-import { ManaCode, MtgCard, MtgSet } from './models/mtg.models';
+import { ManaCode, MtgCard } from './models/mtg.models';
 
 @Component({
   selector: 'app-root',
@@ -25,7 +25,6 @@ export class AppComponent {
   readonly selectedMana = signal<ManaCode | null>(null);
   readonly selectedType = signal<string | null>(null);
   readonly cards = signal<MtgCard[]>([]);
-  readonly sets = signal<MtgSet[]>([]);
   readonly selectedCard = signal<MtgCard | null>(null);
   readonly versions = signal<MtgCard[]>([]);
   readonly activeDeckId = signal('deck-60');
@@ -41,9 +40,7 @@ export class AppComponent {
   readonly activeDeck = computed(() => this.library.decks().find((deck) => deck.id === this.activeDeckId()) ?? this.library.decks()[0]);
   readonly activeDeckCount = computed(() => this.activeDeck()?.cards.reduce((sum, card) => sum + card.quantity, 0) ?? 0);
 
-  constructor() {
-    this.loadSets();
-  }
+  constructor() {}
 
   chooseMana(code: ManaCode): void {
     this.selectedMana.set(code);
@@ -134,13 +131,6 @@ export class AppComponent {
 
   trackByCard(_: number, card: MtgCard): string {
     return card.id;
-  }
-
-  private loadSets(): void {
-    this.api.getSets().subscribe({
-      next: (sets) => this.sets.set(sets.slice(0, 12)),
-      error: () => this.sets.set([])
-    });
   }
 
   private dedupeAndSort(cards: MtgCard[]): MtgCard[] {

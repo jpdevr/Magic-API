@@ -105,23 +105,6 @@
     </div>
   </section>
 
-  <section class="collections">
-    <div class="section-heading">
-      <div>
-        <span>Colecoes recentes</span>
-        <h2>Estampas e edicoes</h2>
-      </div>
-      <p>Dados vindos do endpoint /sets.</p>
-    </div>
-    <div class="set-list">
-      <article *ngFor="let set of sets()">
-        <strong>{{ set.code }}</strong>
-        <span>{{ set.name }}</span>
-        <small>{{ set.releaseDate || 'sem data' }} &middot; {{ set.type || 'set' }}</small>
-      </article>
-    </div>
-  </section>
-
   <section class="rule-book">
     <aside class="book-cover">
       <span>Codex oficial</span>
