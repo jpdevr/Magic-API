@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { finalize } from 'rxjs';
 import { MANA_OPTIONS, TYPE_SYMBOLS } from './data/magic-content';
@@ -12,7 +12,8 @@ import { Deck, DeckCard, ManaCode, MtgCard } from './models/mtg.models';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrl: './app.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent {
   private readonly api = inject(MagicApiService);
@@ -33,6 +34,7 @@ export class AppComponent {
   readonly versionsLoading = signal(false);
   readonly message = signal('');
   readonly searchTerm = signal('');
+  readonly deckNameDraft = signal('');
   readonly currentPage = signal(1);
   readonly hasSearched = signal(false);
 
@@ -41,7 +43,9 @@ export class AppComponent {
   readonly activeDeck = computed(() => this.library.decks().find((deck) => deck.id === this.activeDeckId()) ?? this.library.decks()[0]);
   readonly activeDeckCount = computed(() => this.activeDeck()?.cards.reduce((sum, card) => sum + card.quantity, 0) ?? 0);
 
-  constructor() {}
+  constructor() {
+    this.deckNameDraft.set(this.activeDeck()?.name ?? '');
+  }
 
   chooseMana(code: ManaCode): void {
     if (this.selectedMana() === code) {
@@ -65,12 +69,6 @@ export class AppComponent {
     this.selectedType.set(type);
     this.currentPage.set(1);
     this.runSearch();
-  }
-
-  clearType(): void {
-    this.selectedType.set(null);
-    this.cards.set([]);
-    this.hasSearched.set(false);
   }
 
   runSearch(page = 1): void {
@@ -136,6 +134,7 @@ export class AppComponent {
   selectDeck(deckId: string): void {
     this.activeDeckId.set(deckId);
     this.addTargetDeckId.set(deckId);
+    this.deckNameDraft.set(this.activeDeck()?.name ?? '');
   }
 
   removeDeckCard(cardId: string): void {
@@ -147,12 +146,24 @@ export class AppComponent {
     this.library.createDeck(size);
   }
 
-  renameActiveDeck(name: string): void {
+  commitActiveDeckName(name: string): void {
     const activeDeck = this.activeDeck();
     if (!activeDeck) {
       return;
     }
-    this.library.renameDeck(activeDeck.id, name);
+
+    const trimmed = name.trim();
+    if (!trimmed) {
+      this.deckNameDraft.set(activeDeck.name);
+      return;
+    }
+
+    if (trimmed === activeDeck.name) {
+      return;
+    }
+
+    this.library.renameDeck(activeDeck.id, trimmed);
+    this.deckNameDraft.set(trimmed);
   }
 
   deleteActiveDeck(): void {
@@ -262,6 +273,18 @@ export class AppComponent {
       })
       .join(', ');
     return `linear-gradient(135deg, ${stops})`;
+  }
+
+  trackByManaCode(_: number, mana: { code: string }): string {
+    return mana.code;
+  }
+
+  trackByType(_: number, item: { type: string }): string {
+    return item.type;
+  }
+
+  trackByDeckId(_: number, deck: Deck): string {
+    return deck.id;
   }
 
   private cardManaCodes(card: DeckCard): Array<Exclude<ManaCode, 'C'>> {

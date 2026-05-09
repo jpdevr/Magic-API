@@ -65,26 +65,13 @@ code .
 npm install
 ```
 
-5. Confira os assets de mana.
-
-Os arquivos devem ficar em `public/assets/mana/` com estes nomes:
-
-```txt
-Colorless.webp
-Black.webp
-Red.webp
-Green.webp
-White.webp
-Water.webp
-```
-
-6. Rode o servidor local:
+5. Rode o servidor local:
 
 ```bash
 npm start
 ```
 
-7. Abra no navegador:
+6. Abra no navegador:
 
 ```txt
 http://127.0.0.1:4200
@@ -126,18 +113,6 @@ src/app/
   services/          consumo da API e persistencia em cookies
   app.component.*    tela principal e componentes visuais da primeira versao
 ```
-
-## Notas de design
-
-O tema segue uma direcao escura, medieval e amarronzada. A cor de mana selecionada altera o acento visual da interface sem transformar a pagina em tema claro. Cartas incolores ou de identidade de cinco cores aparecem no fim da listagem filtrada por mana.
-
-## Regras de deck implementadas
-
-- Decks de 30 cartas para estudo casual.
-- Decks de 60 cartas para construcao tradicional.
-- Limite de tamanho respeitado.
-- Maximo de 4 copias por nome de carta, exceto terrenos basicos.
-- O app salva a versao especifica escolhida, incluindo set, imagem e raridade quando esses dados existem.
 
 ## Fontes
 

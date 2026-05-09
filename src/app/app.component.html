@@ -10,7 +10,7 @@
 
     <section class="mana-rail" aria-label="Cores de mana">
       <button
-        *ngFor="let mana of manaOptions"
+        *ngFor="let mana of manaOptions; trackBy: trackByManaCode"
         type="button"
         class="mana-orb"
         [class.active]="selectedMana() === mana.code"
@@ -35,7 +35,7 @@
 
   <section class="mana-showcase" aria-label="Selos de mana">
     <button
-      *ngFor="let mana of manaOptions"
+      *ngFor="let mana of manaOptions; trackBy: trackByManaCode"
       type="button"
       class="mana-seal"
       [class.active]="selectedMana() === mana.code"
@@ -57,7 +57,7 @@
 
   <section class="type-gate" [class.compact]="selectedType()">
     <button
-      *ngFor="let item of typeSymbols"
+      *ngFor="let item of typeSymbols; trackBy: trackByType"
       type="button"
       [class.active]="selectedType() === item.type"
       [title]="item.label"
@@ -129,7 +129,7 @@
         </div>
       </div>
       <div class="mini-list">
-        <article *ngFor="let card of library.favorites()" (click)="openCard(card)">
+        <article *ngFor="let card of library.favorites(); trackBy: trackByCard" (click)="openCard(card)">
           <img *ngIf="card.imageUrl" [src]="card.imageUrl.replace('http://', 'https://')" [alt]="card.name">
           <div>
             <strong>{{ card.name }}</strong>
@@ -161,11 +161,13 @@
           [ngModel]="activeDeckId()"
           (ngModelChange)="selectDeck($event)"
           aria-label="Lista de decks">
-          <option *ngFor="let deck of library.decks()" [value]="deck.id">{{ deck.name }} - {{ deck.size }}</option>
+          <option *ngFor="let deck of library.decks(); trackBy: trackByDeckId" [value]="deck.id">{{ deck.name }} - {{ deck.size }}</option>
         </select>
         <input
-          [ngModel]="activeDeck().name"
-          (ngModelChange)="renameActiveDeck($event)"
+          [ngModel]="deckNameDraft()"
+          (ngModelChange)="deckNameDraft.set($event)"
+          (blur)="commitActiveDeckName(deckNameDraft())"
+          (keyup.enter)="commitActiveDeckName(deckNameDraft())"
           type="text"
           placeholder="Nome do deck"
           aria-label="Nome do deck">
@@ -174,7 +176,7 @@
         <button type="button" class="delete-deck" (click)="deleteActiveDeck()">Excluir</button>
       </div>
       <div class="deck-list">
-        <article *ngFor="let card of activeDeck().cards" (click)="openCard(card)">
+        <article *ngFor="let card of activeDeck().cards; trackBy: trackByCard" (click)="openCard(card)">
           <span class="deck-qty">{{ card.quantity }}x</span>
           <img *ngIf="card.imageUrl" [src]="card.imageUrl.replace('http://', 'https://')" [alt]="card.name">
           <div>
@@ -226,7 +228,7 @@
           <div class="modal-actions">
             <button type="button" (click)="toggleFavorite(card)">{{ library.isFavorite(card.id) ? 'Remover favorita' : 'Favoritar versao' }}</button>
             <select [ngModel]="addTargetDeckId()" (ngModelChange)="addTargetDeckId.set($event)" aria-label="Escolher deck para adicionar">
-              <option *ngFor="let deck of library.decks()" [value]="deck.id">{{ deck.name }}</option>
+              <option *ngFor="let deck of library.decks(); trackBy: trackByDeckId" [value]="deck.id">{{ deck.name }}</option>
             </select>
             <button type="button" (click)="addToDeck(card)">Adicionar ao deck</button>
           </div>

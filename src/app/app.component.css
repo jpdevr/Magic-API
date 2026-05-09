@@ -306,10 +306,6 @@ h1 {
   box-shadow: 0 0 28px var(--accent-soft);
 }
 
-.clear-type {
-  font-size: 1.4rem;
-}
-
 .library-grid,
 .codex-area,
 .vault {
