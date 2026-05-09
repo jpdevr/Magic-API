@@ -108,29 +108,19 @@
   <section class="rule-book">
     <aside class="book-cover">
       <span>Codex oficial</span>
-      <h2>Comprehensive Rules</h2>
-      <p>Esta area aponta para as regras oficiais completas de Magic. O documento da Wizards e a autoridade final; o app organiza o indice em formato de livro para consulta.</p>
+      <h2>Regras basicas de Magic</h2>
+      <p>Leitura rapida das regras essenciais para jogar e consultar durante as partidas.</p>
+      <div class="pdf-reader">
+        <iframe
+          src="/assets/Rules.pdf#zoom=125"
+          title="Regras basicas de Magic em PDF"
+          loading="lazy">
+        </iframe>
+      </div>
       <div class="book-links">
-        <a href="https://magic.wizards.com/rules" target="_blank" rel="noreferrer">Pagina oficial</a>
-        <a href="https://magic.wizards.com/pt-BR/rules" target="_blank" rel="noreferrer">Regras em PT-BR</a>
+        <a href="https://magic.wizards.com/en/rules" target="_blank" rel="noreferrer">Suporte oficial de regras</a>
       </div>
     </aside>
-
-    <div class="rules-panel">
-      <div class="section-heading">
-        <div>
-          <span>Livro de regras</span>
-          <h2>Indice oficial completo</h2>
-        </div>
-      </div>
-      <article *ngFor="let rule of ruleBook">
-        <span>{{ rule.number }}</span>
-        <div>
-          <h3>{{ rule.title }}</h3>
-          <p>{{ rule.description }}</p>
-        </div>
-      </article>
-    </div>
   </section>
 
   <section class="vault">

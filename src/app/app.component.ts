@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { finalize } from 'rxjs';
-import { MANA_OPTIONS, RULE_BOOK, TYPE_SYMBOLS } from './data/magic-content';
+import { MANA_OPTIONS, TYPE_SYMBOLS } from './data/magic-content';
 import { MagicApiService } from './services/magic-api.service';
 import { LibraryService } from './services/library.service';
 import { ManaCode, MtgCard } from './models/mtg.models';
@@ -20,7 +20,6 @@ export class AppComponent {
 
   readonly manaOptions = MANA_OPTIONS;
   readonly typeSymbols = TYPE_SYMBOLS;
-  readonly ruleBook = RULE_BOOK;
 
   readonly selectedMana = signal<ManaCode | null>(null);
   readonly selectedType = signal<string | null>(null);
