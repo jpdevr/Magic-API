@@ -44,12 +44,24 @@ export class AppComponent {
   constructor() {}
 
   chooseMana(code: ManaCode): void {
+    if (this.selectedMana() === code) {
+      this.selectedMana.set(null);
+      this.resetToInitialIfNoActiveFilters();
+      return;
+    }
+
     this.selectedMana.set(code);
     this.currentPage.set(1);
     this.runSearch();
   }
 
   chooseType(type: string): void {
+    if (this.selectedType() === type) {
+      this.selectedType.set(null);
+      this.resetToInitialIfNoActiveFilters();
+      return;
+    }
+
     this.selectedType.set(type);
     this.currentPage.set(1);
     this.runSearch();
@@ -347,5 +359,18 @@ export class AppComponent {
     }
 
     return identity.includes(mana) || identity.length === 0 || identity.length === 5;
+  }
+
+  private resetToInitialIfNoActiveFilters(): void {
+    if (!this.selectedMana() && !this.selectedType() && this.searchTerm().trim().length < 2) {
+      this.cards.set([]);
+      this.hasSearched.set(false);
+      this.currentPage.set(1);
+      this.clearToast();
+      return;
+    }
+
+    this.currentPage.set(1);
+    this.runSearch();
   }
 }

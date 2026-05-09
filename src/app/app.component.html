@@ -64,7 +64,6 @@
       (click)="chooseType(item.type)">
       <span>{{ item.icon }}</span>
     </button>
-    <button *ngIf="selectedType()" type="button" class="clear-type" title="Limpar tipo" (click)="clearType()">&times;</button>
   </section>
 
   <section class="library-grid" *ngIf="hasSearched()">
