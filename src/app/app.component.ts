@@ -16,6 +16,7 @@ import { Deck, DeckCard, ManaCode, MtgCard } from './models/mtg.models';
 })
 export class AppComponent {
   private readonly api = inject(MagicApiService);
+  private toastTimeoutId: ReturnType<typeof setTimeout> | null = null;
   readonly library = inject(LibraryService);
 
   readonly manaOptions = MANA_OPTIONS;
@@ -67,7 +68,7 @@ export class AppComponent {
 
     this.currentPage.set(page);
     this.loading.set(true);
-    this.message.set('');
+    this.clearToast();
     this.hasSearched.set(true);
 
     const filters: Record<string, string | number | boolean | undefined> = {
@@ -84,7 +85,7 @@ export class AppComponent {
 
     this.api.searchCards(filters).pipe(finalize(() => this.loading.set(false))).subscribe({
       next: (cards) => this.cards.set(this.dedupeAndSort(cards)),
-      error: () => this.message.set('Nao foi possivel consultar a API agora. Tente novamente em instantes.')
+      error: () => this.showToast('Nao foi possivel consultar a API agora. Tente novamente em instantes.')
     });
   }
 
@@ -112,12 +113,12 @@ export class AppComponent {
     const deckId = this.addTargetDeckId();
     const deck = this.library.decks().find((item) => item.id === deckId);
     if (!deck) {
-      this.message.set('Selecione um deck valido.');
+      this.showToast('Selecione um deck valido.');
       return;
     }
 
     const result = this.library.addToDeck(deckId, card);
-    this.message.set(result ?? `${card.name} entrou no ${deck.name}.`);
+    this.showToast(result ?? `${card.name} entrou no ${deck.name}.`);
   }
 
   selectDeck(deckId: string): void {
@@ -150,7 +151,7 @@ export class AppComponent {
 
     const result = this.library.deleteDeck(activeDeck.id);
     if (result) {
-      this.message.set(result);
+      this.showToast(result);
       return;
     }
 
@@ -279,6 +280,25 @@ export class AppComponent {
 
   trackByCard(_: number, card: MtgCard): string {
     return card.id;
+  }
+
+  private showToast(text: string): void {
+    this.message.set(text);
+    if (this.toastTimeoutId) {
+      clearTimeout(this.toastTimeoutId);
+    }
+    this.toastTimeoutId = setTimeout(() => {
+      this.message.set('');
+      this.toastTimeoutId = null;
+    }, 3200);
+  }
+
+  private clearToast(): void {
+    if (this.toastTimeoutId) {
+      clearTimeout(this.toastTimeoutId);
+      this.toastTimeoutId = null;
+    }
+    this.message.set('');
   }
 
   private dedupeAndSort(cards: MtgCard[]): MtgCard[] {

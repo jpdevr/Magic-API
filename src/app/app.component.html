@@ -67,8 +67,6 @@
     <button *ngIf="selectedType()" type="button" class="clear-type" title="Limpar tipo" (click)="clearType()">&times;</button>
   </section>
 
-  <p class="status" *ngIf="message()">{{ message() }}</p>
-
   <section class="library-grid" *ngIf="hasSearched()">
     <div class="section-heading">
       <div>
@@ -251,4 +249,8 @@
       </section>
     </article>
   </section>
+
+  <aside class="toast" *ngIf="message()" role="status" aria-live="polite">
+    {{ message() }}
+  </aside>
 </main>

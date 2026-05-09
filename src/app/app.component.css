@@ -303,15 +303,6 @@ h1 {
   font-size: 1.4rem;
 }
 
-.status {
-  max-width: 1100px;
-  margin: 18px auto;
-  padding: 12px 14px;
-  border-left: 4px solid var(--accent);
-  background: rgba(0,0,0,0.28);
-  color: var(--ink);
-}
-
 .library-grid,
 .codex-area,
 .vault {
@@ -670,6 +661,20 @@ h1 {
   gap: 6px;
 }
 
+.toast {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 50;
+  max-width: min(420px, calc(100vw - 28px));
+  border: 1px solid rgba(49, 214, 231, 0.55);
+  border-radius: 8px;
+  padding: 12px 14px;
+  color: #eefcff;
+  background: linear-gradient(160deg, rgba(6, 17, 22, 0.96), rgba(4, 9, 14, 0.98));
+  box-shadow: 0 16px 38px rgba(0, 0, 0, 0.45), inset 0 0 24px rgba(49, 214, 231, 0.14);
+}
+
 .modal-backdrop {
   position: fixed;
   inset: 0;
@@ -826,6 +831,11 @@ dd {
 
   .footer-contact {
     justify-items: start;
+  }
+
+  .toast {
+    right: 14px;
+    bottom: 14px;
   }
 }
 
