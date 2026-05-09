@@ -128,11 +128,11 @@
       <div class="section-heading">
         <div>
           <span>Cofre</span>
-          <h2>Favoritas por versao</h2>
+          <h2>Favoritas</h2>
         </div>
       </div>
       <div class="mini-list">
-        <article *ngFor="let card of library.favorites()">
+        <article *ngFor="let card of library.favorites()" (click)="openCard(card)">
           <img *ngIf="card.imageUrl" [src]="card.imageUrl.replace('http://', 'https://')" [alt]="card.name">
           <div>
             <strong>{{ card.name }}</strong>

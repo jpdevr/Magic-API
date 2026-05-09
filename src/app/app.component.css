@@ -498,15 +498,39 @@ h1 {
 
 .mini-list article {
   display: grid;
-  grid-template-columns: 52px 1fr;
-  gap: 10px;
-  align-items: center;
-  padding: 8px;
+  gap: 8px;
+  padding: 10px;
+  cursor: pointer;
+  justify-items: center;
+  align-content: center;
+  text-align: center;
+  transition: transform 140ms ease, border-color 140ms ease;
+}
+
+.mini-list {
+  grid-template-columns: repeat(auto-fill, minmax(165px, 1fr));
+  gap: 12px;
+}
+
+.mini-list article:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent);
 }
 
 .mini-list img {
   width: 52px;
   border-radius: 4px;
+}
+
+.mini-list strong {
+  display: block;
+  line-height: 1.2;
+}
+
+.mini-list span {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.88rem;
 }
 
 .deck-controls {
