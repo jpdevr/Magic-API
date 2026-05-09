@@ -1,0 +1,11 @@
+{
+  "/mtg-api": {
+    "target": "https://api.magicthegathering.io/v1",
+    "secure": true,
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/mtg-api": ""
+    },
+    "logLevel": "warn"
+  }
+}

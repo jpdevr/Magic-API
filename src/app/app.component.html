@@ -1,0 +1,243 @@
+<main class="app-shell" [ngClass]="themeClass()">
+  <header class="topbar">
+    <section class="brand">
+      <span class="brand-mark">M</span>
+      <div>
+        <h1>Grimorio Magic</h1>
+        <p>cartas, colecoes, regras e decks salvos no navegador</p>
+      </div>
+    </section>
+
+    <section class="mana-rail" aria-label="Cores de mana">
+      <button
+        *ngFor="let mana of manaOptions"
+        type="button"
+        class="mana-orb"
+        [class.active]="selectedMana() === mana.code"
+        [attr.data-mana]="mana.code"
+        [title]="mana.label + ' - ' + mana.tone"
+        (click)="chooseMana(mana.code)">
+        <img [src]="mana.imagePath" [alt]="mana.label" (error)="hideBrokenAsset($event)">
+      </button>
+    </section>
+
+    <form class="search-forge" (ngSubmit)="runSearch(1)">
+      <input
+        name="search"
+        type="search"
+        [ngModel]="searchTerm()"
+        (ngModelChange)="searchTerm.set($event)"
+        placeholder="Pesquise uma carta, planeswalker ou criatura"
+        autocomplete="off">
+      <button type="submit">Buscar</button>
+    </form>
+  </header>
+
+  <section class="mana-showcase" aria-label="Selos de mana">
+    <button
+      *ngFor="let mana of manaOptions"
+      type="button"
+      class="mana-seal"
+      [class.active]="selectedMana() === mana.code"
+      [attr.data-mana]="mana.code"
+      (click)="chooseMana(mana.code)">
+      <img [src]="mana.imagePath" [alt]="mana.label" (error)="hideBrokenAsset($event)">
+      <span>{{ mana.code }}</span>
+    </button>
+  </section>
+
+  <section class="mana-banner" *ngIf="selectedManaOption() as mana">
+    <img class="sigil-image" [src]="mana.imagePath" [alt]="mana.label" (error)="hideBrokenAsset($event)">
+    <span class="sigil">{{ mana.code }}</span>
+    <div>
+      <strong>{{ mana.label }}</strong>
+      <p>{{ mana.tone }}: {{ mana.identity }}.</p>
+    </div>
+  </section>
+
+  <section class="type-gate" [class.compact]="selectedType()">
+    <button
+      *ngFor="let item of typeSymbols"
+      type="button"
+      [class.active]="selectedType() === item.type"
+      [title]="item.label"
+      (click)="chooseType(item.type)">
+      <span>{{ item.icon }}</span>
+    </button>
+    <button *ngIf="selectedType()" type="button" class="clear-type" title="Limpar tipo" (click)="clearType()">&times;</button>
+  </section>
+
+  <p class="status" *ngIf="message()">{{ message() }}</p>
+
+  <section class="library-grid" *ngIf="hasSearched()">
+    <div class="section-heading">
+      <div>
+        <span>Arquivo arcano</span>
+        <h2>{{ selectedType() || 'Cartas encontradas' }}</h2>
+      </div>
+      <p *ngIf="loading()">Consultando grimorios...</p>
+      <p *ngIf="!loading()">{{ cards().length }} nomes unicos nesta pagina</p>
+    </div>
+
+    <div class="card-grid">
+      <article class="spell-card" *ngFor="let card of cards(); trackBy: trackByCard" (click)="openCard(card)">
+        <button
+          type="button"
+          class="fav"
+          [class.active]="library.isFavorite(card.id)"
+          title="Favoritar esta versao"
+          (click)="$event.stopPropagation(); toggleFavorite(card)">
+          &hearts;
+        </button>
+        <img *ngIf="imageFor(card)" [src]="imageFor(card)" [alt]="card.name" loading="lazy">
+        <div class="card-fallback" *ngIf="!imageFor(card)">{{ card.name }}</div>
+        <footer>
+          <strong>{{ card.name }}</strong>
+          <span>{{ card.setName || card.set }} &middot; {{ card.rarity || 'sem raridade' }}</span>
+        </footer>
+      </article>
+    </div>
+
+    <div class="pager">
+      <button type="button" [disabled]="currentPage() === 1 || loading()" (click)="runSearch(currentPage() - 1)">Anterior</button>
+      <span>Pagina {{ currentPage() }}</span>
+      <button type="button" [disabled]="loading()" (click)="runSearch(currentPage() + 1)">Proxima</button>
+    </div>
+  </section>
+
+  <section class="collections">
+    <div class="section-heading">
+      <div>
+        <span>Colecoes recentes</span>
+        <h2>Estampas e edicoes</h2>
+      </div>
+      <p>Dados vindos do endpoint /sets.</p>
+    </div>
+    <div class="set-list">
+      <article *ngFor="let set of sets()">
+        <strong>{{ set.code }}</strong>
+        <span>{{ set.name }}</span>
+        <small>{{ set.releaseDate || 'sem data' }} &middot; {{ set.type || 'set' }}</small>
+      </article>
+    </div>
+  </section>
+
+  <section class="rule-book">
+    <aside class="book-cover">
+      <span>Codex oficial</span>
+      <h2>Comprehensive Rules</h2>
+      <p>Esta area aponta para as regras oficiais completas de Magic. O documento da Wizards e a autoridade final; o app organiza o indice em formato de livro para consulta.</p>
+      <div class="book-links">
+        <a href="https://magic.wizards.com/rules" target="_blank" rel="noreferrer">Pagina oficial</a>
+        <a href="https://magic.wizards.com/pt-BR/rules" target="_blank" rel="noreferrer">Regras em PT-BR</a>
+      </div>
+    </aside>
+
+    <div class="rules-panel">
+      <div class="section-heading">
+        <div>
+          <span>Livro de regras</span>
+          <h2>Indice oficial completo</h2>
+        </div>
+      </div>
+      <article *ngFor="let rule of ruleBook">
+        <span>{{ rule.number }}</span>
+        <div>
+          <h3>{{ rule.title }}</h3>
+          <p>{{ rule.description }}</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="vault">
+    <div class="favorites">
+      <div class="section-heading">
+        <div>
+          <span>Cofre</span>
+          <h2>Favoritas por versao</h2>
+        </div>
+      </div>
+      <div class="mini-list">
+        <article *ngFor="let card of library.favorites()">
+          <img *ngIf="card.imageUrl" [src]="card.imageUrl.replace('http://', 'https://')" [alt]="card.name">
+          <div>
+            <strong>{{ card.name }}</strong>
+            <span>{{ card.setName || card.set }}</span>
+          </div>
+        </article>
+      </div>
+    </div>
+
+    <div class="deck-builder">
+      <div class="section-heading">
+        <div>
+          <span>Forja de decks</span>
+          <h2>{{ activeDeck().name }}</h2>
+        </div>
+        <p>{{ activeDeckCount() }}/{{ activeDeck().size }}</p>
+      </div>
+      <div class="deck-controls">
+        <select [ngModel]="activeDeckId()" (ngModelChange)="selectDeck($event)" aria-label="Selecionar deck">
+          <option *ngFor="let deck of library.decks()" [value]="deck.id">{{ deck.name }} - {{ deck.size }}</option>
+        </select>
+        <button type="button" (click)="library.createDeck(30)">+30</button>
+        <button type="button" (click)="library.createDeck(60)">+60</button>
+      </div>
+      <div class="deck-list">
+        <article *ngFor="let card of activeDeck().cards">
+          <span>{{ card.quantity }}x</span>
+          <strong>{{ card.name }}</strong>
+          <small>{{ card.setName || card.set }}</small>
+          <button type="button" title="Remover copia" (click)="removeDeckCard(card.id)">&minus;</button>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <strong>Grimorio Magic</strong>
+    <span>Projeto educativo feito para estudar Angular, APIs REST e Magic: The Gathering.</span>
+    <span>Dados: Magic: The Gathering API. Imagens: Gatherer/Wizards quando disponiveis. Criado por Joao Pedro.</span>
+  </footer>
+
+  <section class="modal-backdrop" *ngIf="selectedCard() as card" (click)="closeCard()">
+    <article class="card-modal" (click)="$event.stopPropagation()">
+      <button type="button" class="close" title="Fechar" (click)="closeCard()">&times;</button>
+      <div class="modal-main">
+        <img *ngIf="imageFor(card)" [src]="imageFor(card)" [alt]="card.name">
+        <div>
+          <span class="rarity">{{ card.rarity || 'sem raridade' }} &middot; {{ card.setName || card.set }}</span>
+          <h2>{{ card.name }}</h2>
+          <p class="type-line">{{ card.type }}</p>
+          <p class="oracle">{{ card.text }}</p>
+          <p class="flavor" *ngIf="card.flavor">{{ card.flavor }}</p>
+          <dl>
+            <div><dt>Mana</dt><dd>{{ card.manaCost || 'sem custo' }}</dd></div>
+            <div><dt>Artista</dt><dd>{{ card.artist || 'desconhecido' }}</dd></div>
+            <div><dt>Poder/Resistencia</dt><dd>{{ card.power || '-' }}/{{ card.toughness || '-' }}</dd></div>
+            <div><dt>Printings</dt><dd>{{ card.printings?.join(', ') || 'sem dados' }}</dd></div>
+          </dl>
+          <div class="modal-actions">
+            <button type="button" (click)="toggleFavorite(card)">{{ library.isFavorite(card.id) ? 'Remover favorita' : 'Favoritar versao' }}</button>
+            <button type="button" (click)="addToDeck(card)">Adicionar ao deck ativo</button>
+          </div>
+        </div>
+      </div>
+      <section class="versions">
+        <h3>Outras estampas e artes</h3>
+        <p *ngIf="versionsLoading()">Buscando versoes...</p>
+        <div>
+          <button
+            type="button"
+            *ngFor="let version of versions(); trackBy: trackByCard"
+            [class.active]="version.id === card.id"
+            (click)="selectedCard.set(version)">
+            <img *ngIf="imageFor(version)" [src]="imageFor(version)" [alt]="version.name">
+            <span>{{ version.set || 'set' }}</span>
+          </button>
+        </div>
+      </section>
+    </article>
+  </section>
+</main>
