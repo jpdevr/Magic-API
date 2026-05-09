@@ -85,7 +85,13 @@
   gap: 12px;
 }
 
-.brand-mark,
+.brand-logo {
+  width: 62px;
+  height: 62px;
+  object-fit: contain;
+  filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.5));
+}
+
 .sigil {
   display: grid;
   place-items: center;
@@ -132,6 +138,7 @@ h1 {
 
 .mana-rail {
   display: flex;
+  justify-self: center;
   gap: 8px;
   padding: 8px;
   border-radius: 8px;
