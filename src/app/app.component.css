@@ -222,7 +222,9 @@ h1 {
 }
 
 .search-forge input,
-.deck-controls select {
+.deck-controls input,
+.deck-picker,
+.modal-actions select {
   width: 100%;
   min-height: 44px;
   border: 1px solid rgba(244, 234, 215, 0.16);
@@ -236,7 +238,8 @@ h1 {
 .pager button,
 .modal-actions button,
 .deck-controls button,
-.deck-list button {
+.deck-list button,
+.deck-nav {
   min-height: 42px;
   border: 1px solid rgba(255,255,255,0.14);
   border-radius: 6px;
@@ -535,20 +538,85 @@ h1 {
 
 .deck-controls {
   display: grid;
-  grid-template-columns: 1fr auto auto;
+  grid-template-columns: 44px minmax(220px, 320px) 1fr 44px auto auto;
   gap: 8px;
   margin-bottom: 14px;
 }
 
-.deck-list article {
-  display: grid;
-  grid-template-columns: auto 1fr auto auto;
-  gap: 10px;
-  align-items: center;
-  padding: 10px;
+.delete-deck {
+  background: linear-gradient(180deg, #e77754, #8f3218);
+  color: #fff5e9;
 }
 
-.deck-list span {
+.deck-nav {
+  padding: 0;
+  font-size: 1.4rem;
+}
+
+.deck-status {
+  display: grid;
+  grid-template-columns: 84px 1fr;
+  gap: 12px;
+  align-items: center;
+  border: 1px solid rgba(244, 234, 215, 0.12);
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 12px;
+}
+
+.deck-status-colors {
+  height: 28px;
+  border-radius: 999px;
+  border: 1px solid rgba(0,0,0,0.4);
+}
+
+.deck-status-copy {
+  display: grid;
+  gap: 2px;
+}
+
+.deck-status.ok-30,
+.deck-status.ok-60 {
+  border-color: #4fd998;
+  box-shadow: inset 0 0 24px rgba(79, 217, 152, 0.15);
+}
+
+.deck-status.invalid {
+  border-color: #31d6e7;
+  box-shadow: inset 0 0 24px rgba(49, 214, 231, 0.16);
+}
+
+.deck-list article {
+  display: grid;
+  grid-template-columns: auto 52px 1fr auto;
+  gap: 8px;
+  align-items: start;
+  padding: 10px;
+  cursor: pointer;
+  transition: transform 140ms ease, border-color 140ms ease;
+}
+
+.deck-list {
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.deck-list article:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent);
+}
+
+.deck-list img {
+  width: 52px;
+  border-radius: 4px;
+}
+
+.deck-list strong,
+.deck-list small {
+  display: block;
+}
+
+.deck-qty {
   color: var(--accent);
   font-weight: 900;
 }

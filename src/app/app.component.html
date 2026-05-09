@@ -148,21 +148,43 @@
           <span>Forja de decks</span>
           <h2>{{ activeDeck().name }}</h2>
         </div>
-        <p>{{ activeDeckCount() }}/{{ activeDeck().size }}</p>
+        <p>{{ activeDeckCount() }} cartas</p>
+      </div>
+      <div class="deck-status" [ngClass]="deckState(activeDeck())">
+        <div class="deck-status-colors" [style.background]="deckColorStyle(activeDeck())"></div>
+        <div class="deck-status-copy">
+          <strong>{{ activeDeckCount() }} cartas</strong>
+          <span>{{ deckStatusText(activeDeck()) }}</span>
+        </div>
       </div>
       <div class="deck-controls">
-        <select [ngModel]="activeDeckId()" (ngModelChange)="selectDeck($event)" aria-label="Selecionar deck">
+        <button type="button" class="deck-nav" title="Deck anterior" (click)="selectPreviousDeck()">&lsaquo;</button>
+        <select
+          class="deck-picker"
+          [ngModel]="activeDeckId()"
+          (ngModelChange)="selectDeck($event)"
+          aria-label="Lista de decks">
           <option *ngFor="let deck of library.decks()" [value]="deck.id">{{ deck.name }} - {{ deck.size }}</option>
         </select>
-        <button type="button" (click)="library.createDeck(30)">+30</button>
-        <button type="button" (click)="library.createDeck(60)">+60</button>
+        <input
+          [ngModel]="activeDeck().name"
+          (ngModelChange)="renameActiveDeck($event)"
+          type="text"
+          placeholder="Nome do deck"
+          aria-label="Nome do deck">
+        <button type="button" class="deck-nav" title="Proximo deck" (click)="selectNextDeck()">&rsaquo;</button>
+        <button type="button" (click)="createDeck()">+ Deck</button>
+        <button type="button" class="delete-deck" (click)="deleteActiveDeck()">Excluir</button>
       </div>
       <div class="deck-list">
-        <article *ngFor="let card of activeDeck().cards">
-          <span>{{ card.quantity }}x</span>
-          <strong>{{ card.name }}</strong>
-          <small>{{ card.setName || card.set }}</small>
-          <button type="button" title="Remover copia" (click)="removeDeckCard(card.id)">&minus;</button>
+        <article *ngFor="let card of activeDeck().cards" (click)="openCard(card)">
+          <span class="deck-qty">{{ card.quantity }}x</span>
+          <img *ngIf="card.imageUrl" [src]="card.imageUrl.replace('http://', 'https://')" [alt]="card.name">
+          <div>
+            <strong>{{ card.name }}</strong>
+            <small>{{ card.setName || card.set }}</small>
+          </div>
+          <button type="button" title="Remover copia" (click)="$event.stopPropagation(); removeDeckCard(card.id)">&minus;</button>
         </article>
       </div>
     </div>
@@ -193,7 +215,10 @@
           </dl>
           <div class="modal-actions">
             <button type="button" (click)="toggleFavorite(card)">{{ library.isFavorite(card.id) ? 'Remover favorita' : 'Favoritar versao' }}</button>
-            <button type="button" (click)="addToDeck(card)">Adicionar ao deck ativo</button>
+            <select [ngModel]="addTargetDeckId()" (ngModelChange)="addTargetDeckId.set($event)" aria-label="Escolher deck para adicionar">
+              <option *ngFor="let deck of library.decks()" [value]="deck.id">{{ deck.name }}</option>
+            </select>
+            <button type="button" (click)="addToDeck(card)">Adicionar ao deck</button>
           </div>
         </div>
       </div>

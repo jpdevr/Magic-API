@@ -93,6 +93,45 @@ export class LibraryService {
     this.writeCookie(DECKS_KEY, decks);
   }
 
+  renameDeck(deckId: string, name: string): void {
+    const trimmed = name.trim();
+    if (!trimmed) {
+      return;
+    }
+
+    const decks = this.decks().map((deck) => deck.id === deckId ? { ...deck, name: trimmed } : deck);
+    this.decks.set(decks);
+    this.writeCookie(DECKS_KEY, decks);
+  }
+
+  updateDeckSize(deckId: string, size: DeckSize): string | null {
+    const deck = this.decks().find((item) => item.id === deckId);
+    if (!deck) {
+      return 'Deck nao encontrado.';
+    }
+
+    const total = deck.cards.reduce((sum, item) => sum + item.quantity, 0);
+    if (total > size) {
+      return `Este deck tem ${total} cartas. Remova cartas antes de reduzir para ${size}.`;
+    }
+
+    const decks = this.decks().map((item) => item.id === deckId ? { ...item, size } : item);
+    this.decks.set(decks);
+    this.writeCookie(DECKS_KEY, decks);
+    return null;
+  }
+
+  deleteDeck(deckId: string): string | null {
+    if (this.decks().length <= 1) {
+      return 'Mantenha pelo menos um deck.';
+    }
+
+    const decks = this.decks().filter((deck) => deck.id !== deckId);
+    this.decks.set(decks);
+    this.writeCookie(DECKS_KEY, decks);
+    return null;
+  }
+
   private toFavorite(card: MtgCard): FavoriteCard {
     return {
       id: card.id,
