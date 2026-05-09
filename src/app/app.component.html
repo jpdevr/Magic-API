@@ -191,9 +191,22 @@
   </section>
 
   <footer class="footer">
-    <strong>Grimorio Magic</strong>
-    <span>Projeto educativo feito para estudar Angular, APIs REST e Magic: The Gathering.</span>
-    <span>Dados: Magic: The Gathering API. Imagens: Gatherer/Wizards quando disponiveis. Criado por Joao Pedro.</span>
+    <div class="footer-brand">
+      <strong>Grimorio Magic</strong>
+      <span>Projeto educativo para estudar Angular, APIs REST e Magic: The Gathering.</span>
+    </div>
+    <div class="footer-credits">
+      <strong>Creditos e Fontes</strong>
+      <span>Dados de cartas e colecoes: <a href="https://magicthegathering.io/" target="_blank" rel="noreferrer">Magic: The Gathering API</a>.</span>
+      <span>Regras oficiais: <a href="https://magic.wizards.com/en/rules" target="_blank" rel="noreferrer">Wizards of the Coast</a>.</span>
+      <span>Imagens: Gatherer/Wizards quando disponiveis.</span>
+    </div>
+    <div class="footer-contact">
+      <strong>Contato</strong>
+      <a href="https://github.com/jpdevr/" target="_blank" rel="noreferrer">GitHub</a>
+      <a href="https://www.linkedin.com/in/jpdevr324/" target="_blank" rel="noreferrer">LinkedIn</a>
+      <a href="mailto:joaogapires@gmail.com">joaogapires@gmail.com</a>
+    </div>
   </footer>
 
   <section class="modal-backdrop" *ngIf="selectedCard() as card" (click)="closeCard()">
